@@ -2,6 +2,7 @@ import { useState } from 'react';
 import LandingLayout from '@/Layouts/LandingLayout';
 import LandingNavbar from '@/Components/LandingNavbar';
 import { Head, router } from '@inertiajs/react';
+import { FaPrint } from 'react-icons/fa'; // Impor ikon
 
 function getStatusLabel(status) {
     switch (status) {
@@ -151,9 +152,34 @@ export default function PesananSaya({ auth, pemesanans }) {
                         className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
-                            Detail Pemesanan
-                        </h2>
+                        <div className="flex justify-between items-center mb-4 border-b pb-2">
+                             <h2 className="text-xl font-semibold text-gray-800">
+                                Detail Pemesanan
+                            </h2>
+                            {/* 👇 REVISI LOGIKA TOMBOL DIMULAI DI SINI 👇 */}
+                            <a
+                                href={selectedPesanan.status_pemesanan === 'paid' ? route('pemesanan.invoice', selectedPesanan.id) : '#'}
+                                target={selectedPesanan.status_pemesanan === 'paid' ? '_blank' : '_self'}
+                                onClick={(e) => {
+                                    if (selectedPesanan.status_pemesanan !== 'paid') {
+                                        e.preventDefault();
+                                    }
+                                }}
+                                // Terapkan style disabled jika status bukan 'paid'
+                                className={`inline-flex items-center px-3 py-2 border border-transparent rounded-md font-semibold text-xs text-white transition
+                                    ${ selectedPesanan.status_pemesanan === 'paid'
+                                        ? 'bg-blue-600 hover:bg-blue-700' // Style aktif
+                                        : 'bg-gray-400 cursor-not-allowed' // Style disabled
+                                    }`
+                                }
+                                // Tambahkan title untuk tooltip jika disabled
+                                title={selectedPesanan.status_pemesanan !== 'paid' ? 'Invoice hanya tersedia jika pesanan sudah lunas' : 'Cetak Invoice'}
+                            >
+                                <FaPrint className="mr-2" />
+                                Cetak Invoice
+                            </a>
+                            {/* AKHIR REVISI */}
+                        </div>
 
                         <div className="space-y-3 text-sm text-gray-700">
                             <div>

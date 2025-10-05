@@ -15,7 +15,7 @@ export default function AuthenticatedLayout({ header, children }) {
             case 'admin':
                 return (
                     <>
-                        <NavLink href={route('dashboard')} active={route().current('dashboard')}>
+                        <NavLink href={route('admin.dashboard')} active={route().current('admin.dashboard')}>
                             Dashboard
                         </NavLink>
                         <NavLink href={route('admin.mobil.index')} active={route().current('admin.mobil.index')}>
@@ -26,6 +26,9 @@ export default function AuthenticatedLayout({ header, children }) {
                         </NavLink>
                         <NavLink href={route('admin.pembayaran.index')} active={route().current('admin.pembayaran.index')}>
                             Pembayaran
+                        </NavLink>
+                        <NavLink href={route('admin.laporan.index')} active={route().current('admin.laporan.index')}>
+                            Laporan
                         </NavLink>
                     </>
                 );
@@ -53,7 +56,7 @@ export default function AuthenticatedLayout({ header, children }) {
             case 'admin':
                 return (
                     <>
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
+                        <ResponsiveNavLink href={route('admin.dashboard')} active={route().current('dashboard')}>
                             Dashboard
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('admin.mobil.index')} active={route().current('admin.mobil.index')}>
@@ -64,6 +67,9 @@ export default function AuthenticatedLayout({ header, children }) {
                         </ResponsiveNavLink>
                         <ResponsiveNavLink href={route('admin.pembayaran.index')} active={route().current('admin.pembayaran.index')}>
                             Pembayaran
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink href={route('admin.laporan.index')} active={route().current('admin.laporan.index')}>
+                            Laporan
                         </ResponsiveNavLink>
                     </>
                 );

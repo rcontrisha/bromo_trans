@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pembayaran;
 use App\Models\Pemesanan;
+use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -58,5 +61,34 @@ class PembayaranController extends Controller
         $pemesanan->save();
 
         return back()->with('success', 'Pesanan berhasil dibatalkan.');
+    }
+
+    /**
+     * Menghasilkan dan mengunduh invoice PDF untuk customer.
+     */
+    public function downloadInvoice(Pemesanan $pemesanan)
+    {
+        if ($pemesanan->customer->user_id !== Auth::id()) {
+            abort(403, 'Akses Ditolak.');
+        }
+
+        if ($pemesanan->status_pemesanan !== 'paid') {
+            abort(403, 'Invoice belum tersedia.');
+        }
+
+        $pemesanan->load(['customer', 'tiket.mobil', 'pembayaran']);
+
+        // Ganti view ke template invoice yang baru
+        $pdf = PDF::loadView('pdf.invoice', ['pemesanan' => $pemesanan]);
+
+        // Buat nama file yang lebih informatif
+        $namaFile = sprintf(
+            'INV-%s-%s-%s.pdf',
+            $pemesanan->id,
+            str_replace(' ', '_', strtoupper($pemesanan->customer->nama)),
+            Carbon::parse($pemesanan->tanggal_pemesanan)->format('Ymd')
+        );
+
+        return $pdf->download($namaFile);
     }
 }

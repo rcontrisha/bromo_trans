@@ -1,199 +1,175 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <title>Invoice #{{ $pemesanan->id }}</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+            font-family: 'Helvetica', DejaVu Sans, sans-serif;
+            font-size: 12px;
             color: #333;
-            background-color: #f9fafb;
+        }
+        .container {
+            width: 100%;
             padding: 20px;
         }
-        .invoice-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
+        table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .invoice-header {
-            background: linear-gradient(135deg, #2c5282, #3182ce);
-            color: white;
-            padding: 30px 40px;
-            text-align: center;
+        .header-table td {
+            vertical-align: top;
         }
-        .invoice-header h1 {
+        .header-table .logo {
+            width: 80px;
+        }
+        .header-table .company-details {
+            text-align: right;
+        }
+        .header-table h1 {
             margin: 0;
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 24px;
+            color: #2c5282;
         }
-        .invoice-header p {
-            margin: 10px 0 0;
-            opacity: 0.9;
-        }
-        .invoice-body {
-            padding: 40px;
-        }
-        .section {
+        .details-table {
+            margin-top: 30px;
             margin-bottom: 30px;
         }
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #2c5282;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
+        .details-table td {
+            vertical-align: top;
+            padding: 2px 0;
+            width: 50%;
         }
-        .detail-grid {
-            display: grid;
-            grid-template-columns: max-content 1fr;
-            gap: 12px 20px;
-            font-size: 15px;
+        .items-table {
+            margin-top: 20px;
+            border: 1px solid #ddd;
         }
-        .detail-label {
-            font-weight: 600;
-            color: #4a5568;
+        .items-table th, .items-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
         }
-        .detail-value {
-            color: #2d3748;
+        .items-table thead th {
+            background-color: #f2f2f2;
+            font-weight: bold;
         }
-        .passenger-list {
-            margin-top: 15px;
+        .items-table .text-right {
+            text-align: right;
         }
-        .passenger-item {
-            padding: 16px;
-            margin-bottom: 12px;
-            background-color: #f8fafc;
-            border-radius: 8px;
-            border-left: 4px solid #2c5282;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        .total-section {
+            margin-top: 20px;
         }
-        .passenger-item p {
-            margin: 6px 0;
+        .total-table {
+            width: 45%;
+            float: right;
         }
-        .total-price {
-            font-size: 20px;
-            font-weight: 700;
-            color: #2c5282;
+        .total-table td {
+            padding: 8px;
         }
-        .status-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            background-color: #c6f6d5;
-            color: #22543d;
+        .total-table .total-label {
+            font-weight: bold;
         }
-        .payment-method {
-            font-weight: 600;
-            color: #2c5282;
+        .total-table .grand-total td {
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #e2e8f0;
         }
         .footer {
-            background-color: #edf2f7;
-            padding: 25px 40px;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
             text-align: center;
-            color: #4a5568;
-            font-size: 14px;
+            font-size: 10px;
+            color: #888;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
         }
-        .divider {
-            height: 1px;
-            background: #e2e8f0;
-            margin: 25px 0;
+        .status-paid {
+            color: #28a745;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="invoice-container">
-        <div class="invoice-header">
-            <h1>Invoice Pembayaran</h1>
-            <p>Tanggal: {{ now()->format('d M Y H:i') }}</p>
+    <div class="container">
+        <table class="header-table">
+            <tr>
+                <td class="logo">
+                    <img src="{{ public_path('images/logo.png') }}" alt="Logo" style="width: 70px;">
+                </td>
+                <td class="company-details">
+                    <h1>INVOICE</h1>
+                    <p>
+                        <strong>Bromo Trans Travel</strong><br>
+                        Jl. Raya Bromo No.2, Sukapura, Probolinggo<br>
+                        bromotrans.travel@gmail.com
+                    </p>
+                </td>
+            </tr>
+        </table>
+
+        <table class="details-table">
+            <tr>
+                <td>
+                    <strong>Ditagihkan Kepada:</strong><br>
+                    {{ $pemesanan->customer->nama }}<br>
+                    {{ $pemesanan->customer->no_hp }}<br>
+                    {{ $pemesanan->customer->alamat }}
+                </td>
+                <td style="text-align: right;">
+                    <strong>Invoice #:</strong> {{ $pemesanan->id }}<br>
+                    <strong>Tanggal Pesan:</strong> {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->format('d M Y') }}<br>
+                    <strong>Tanggal Bayar:</strong> {{ \Carbon\Carbon::parse($pemesanan->pembayaran->tanggal_pembayaran)->format('d M Y') }}<br>
+                    <strong>Status:</strong> <span class="status-paid">LUNAS</span>
+                </td>
+            </tr>
+        </table>
+
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Deskripsi</th>
+                    <th class="text-right">Jumlah</th>
+                    <th class="text-right">Harga Satuan</th>
+                    <th class="text-right">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <strong>Tiket Perjalanan: Probolinggo - {{ $pemesanan->tiket->tujuan }}</strong><br>
+                        <small>
+                            Jadwal: {{ \Carbon\Carbon::parse($pemesanan->tiket->jadwal_keberangkatan)->translatedFormat('l, d M Y, H:i') }}<br>
+                            Armada: {{ $pemesanan->tiket->mobil->tipe_mobil }} ({{ $pemesanan->tiket->mobil->plat_nomor }})
+                        </small>
+                    </td>
+                    <td class="text-right">{{ $pemesanan->jumlah_tiket }}</td>
+                    <td class="text-right">Rp {{ number_format($pemesanan->total_harga / $pemesanan->jumlah_tiket, 0, ',', '.') }}</td>
+                    <td class="text-right">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total-section">
+            <table class="total-table">
+                <tr>
+                    <td class="total-label">Subtotal</td>
+                    <td class="text-right">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</td>
+                </tr>
+                <tr>
+                    <td class="total-label">Pajak (0%)</td>
+                    <td class="text-right">Rp 0</td>
+                </tr>
+                <tr class="grand-total">
+                    <td>Total Pembayaran</td>
+                    <td class="text-right">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</td>
+                </tr>
+            </table>
         </div>
-        
-        <div class="invoice-body">
-            <div class="section">
-                <h2 class="section-title">Detail Pemesanan</h2>
-                <div class="detail-grid">
-                    <div class="detail-label">Kode Pemesanan:</div>
-                    <div class="detail-value">#{{ $pemesanan->id }}</div>
-                    
-                    <div class="detail-label">Tujuan:</div>
-                    <div class="detail-value">Probolinggo - {{ $pemesanan->tiket->tujuan }}</div>
-                    
-                    <div class="detail-label">Jadwal Keberangkatan:</div>
-                    <div class="detail-value">
-                        {{ \Carbon\Carbon::parse($pemesanan->tiket->jadwal_keberangkatan)->translatedFormat('l, j F Y') }} 
-                        pukul {{ \Carbon\Carbon::parse($pemesanan->tiket->jadwal_keberangkatan)->format('H:i') }}
-                    </div>
-                    
-                    <div class="detail-label">Tanggal Pemesanan:</div>
-                    <div class="detail-value">
-                        {{ \Carbon\Carbon::parse($pemesanan->tanggal_pemesanan)->translatedFormat('j/n/Y, H.i.s') }}
-                    </div>
-                    
-                    <div class="detail-label">Jumlah Tiket:</div>
-                    <div class="detail-value">{{ $pemesanan->jumlah_tiket }} orang</div>
-                    
-                    <div class="detail-label">Total Harga:</div>
-                    <div class="detail-value total-price">
-                        Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}
-                    </div>
-                    
-                    <div class="detail-label">Status Pemesanan:</div>
-                    <div class="detail-value">
-                        <span class="status-badge">{{ ucfirst($pemesanan->status_pemesanan) }}</span>
-                    </div>
-                    
-                    <div class="detail-label">Informasi Kendaraan:</div>
-                    <div class="detail-value">
-                        {{ $pemesanan->tiket->mobil->tipe_mobil }} — {{ $pemesanan->tiket->mobil->plat_nomor }}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <div class="section">
-                <h2 class="section-title">Data Penumpang</h2>
-                <div class="passenger-list">
-                    @foreach(json_decode($pemesanan->data_penumpang, true) as $index => $penumpang)
-                        <div class="passenger-item">
-                            <p><span class="detail-label">Nama:</span> {{ $penumpang['nama'] }}</p>
-                            <p><span class="detail-label">Kontak:</span> {{ $penumpang['kontak'] }}</p>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-            
-            <div class="divider"></div>
-            
-            <div class="section">
-                <h2 class="section-title">Detail Pembayaran</h2>
-                <div class="detail-grid">
-                    <div class="detail-label">Metode Pembayaran:</div>
-                    <div class="detail-value payment-method">
-                        {{ ucfirst($pemesanan->pembayaran->metode_pembayaran) }}
-                    </div>
-                    
-                    <div class="detail-label">Jumlah Pembayaran:</div>
-                    <div class="detail-value">
-                        Rp {{ number_format($pemesanan->pembayaran->jumlah_pembayaran, 0, ',', '.') }}
-                    </div>
-                    
-                    <div class="detail-label">Tanggal Pembayaran:</div>
-                    <div class="detail-value">
-                        {{ \Carbon\Carbon::parse($pemesanan->pembayaran->tanggal_pembayaran)->translatedFormat('j/n/Y, H.i.s') }}
-                    </div>
-                </div>
-            </div>
-        </div>
-        
+
         <div class="footer">
-            <p>Terima kasih telah menggunakan layanan Bromo Trans.</p>
-            <p>&copy; {{ date('Y') }} Bromo Trans. Semua hak dilindungi.</p>
+            Terima kasih telah melakukan perjalanan bersama Bromo Trans Travel.
         </div>
     </div>
 </body>
