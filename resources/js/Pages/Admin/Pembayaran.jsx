@@ -76,34 +76,42 @@ export default function Pembayaran({ auth, pembayarans }) {
                                             )}
                                         </td>
                                         <td className="p-3 border capitalize">
-                                            {isLunas ? (
+                                            {pembayaran.pemesanan.status_pemesanan === "paid" ? (
                                                 <span className="text-green-600 font-semibold">Lunas</span>
+                                            ) : pembayaran.pemesanan.status_pemesanan === "rejected" ? (
+                                                <span className="text-red-600 font-semibold">Ditolak</span>
+                                            ) : pembayaran.pemesanan.status_pemesanan === "cancelled" ? (
+                                                <span className="text-gray-500 font-semibold">Dibatalkan</span>
                                             ) : (
                                                 <span className="text-yellow-600">Menunggu</span>
                                             )}
                                         </td>
                                         <td className="p-3 border">
-                                            {isLunas ? (
+                                            {pembayaran.pemesanan.status_pemesanan === "paid" ? (
                                                 <button
-                                                    onClick={() => handleKirimInvoice(pembayaran.pemesanan.id)}
-                                                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition"
+                                                onClick={() => handleKirimInvoice(pembayaran.pemesanan.id)}
+                                                className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition"
                                                 >
-                                                    Kirim Invoice
+                                                Kirim Invoice
                                                 </button>
+                                            ) : pembayaran.pemesanan.status_pemesanan === "rejected" ? (
+                                                <span className="text-red-600 font-semibold"></span>
+                                            ) : pembayaran.pemesanan.status_pemesanan === "cancelled" ? (
+                                                <span className="text-gray-500 font-semibold"></span>
                                             ) : (
                                                 <div className="space-x-2">
-                                                    <button
-                                                        onClick={() => handleKonfirmasi(pembayaran.id)}
-                                                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded transition"
-                                                    >
-                                                        Konfirmasi
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleTolak(pembayaran.id)}
-                                                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition"
-                                                    >
-                                                        Tolak
-                                                    </button>
+                                                <button
+                                                    onClick={() => handleKonfirmasi(pembayaran.id)}
+                                                    className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded transition"
+                                                >
+                                                    Konfirmasi
+                                                </button>
+                                                <button
+                                                    onClick={() => handleTolak(pembayaran.id)}
+                                                    className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition"
+                                                >
+                                                    Tolak
+                                                </button>
                                                 </div>
                                             )}
                                         </td>

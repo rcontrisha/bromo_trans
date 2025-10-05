@@ -13,6 +13,7 @@ function getHargaTiketMasuk(dateStr) {
 
 export default function Jadwal({ auth, tikets, customer }) {
     const [showModal, setShowModal] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false); // ✅ popup sukses
     const [selectedTiket, setSelectedTiket] = useState(null);
     const [jumlahTiket, setJumlahTiket] = useState(1);
     const [penumpangs, setPenumpangs] = useState([{ nama: '', kontak: '' }]);
@@ -72,6 +73,7 @@ export default function Jadwal({ auth, tikets, customer }) {
         }, {
             onSuccess: () => {
                 setShowModal(false);
+                setShowSuccess(true); // ✅ tampilkan popup sukses
             }
         });
     };
@@ -86,7 +88,6 @@ export default function Jadwal({ auth, tikets, customer }) {
         <>
             <Head title="Jadwal Keberangkatan" />
             <LandingLayout>
-                {/* Force navbar dalam keadaan scrolled */}
                 <LandingNavbar user={auth.user} forceScrolled={true} />
                 <div className="max-w-7xl mx-auto px-4 py-8 pt-24">
                     <h1 className="text-2xl font-bold mb-6 text-gray-800">Jadwal Keberangkatan</h1>
@@ -136,6 +137,7 @@ export default function Jadwal({ auth, tikets, customer }) {
                 </div>
             </LandingLayout>
 
+            {/* Modal Form Pesan */}
             {showModal && selectedTiket && (
                 <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
                     onClick={() => setShowModal(false)}
@@ -200,6 +202,26 @@ export default function Jadwal({ auth, tikets, customer }) {
                                 Pesan
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Popup sukses */}
+            {showSuccess && (
+                <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+                    onClick={() => setShowSuccess(false)}
+                >
+                    <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm text-center"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <h2 className="text-xl font-bold text-green-600 mb-3">✅ Pesanan Berhasil</h2>
+                        <p className="text-gray-700 mb-4">Tiket kamu berhasil dipesan. Silakan cek detail pemesanan di menu akun.</p>
+                        <button
+                            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            onClick={() => setShowSuccess(false)}
+                        >
+                            OK
+                        </button>
                     </div>
                 </div>
             )}

@@ -43,6 +43,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::post('/pemesanan', [CustomerTiketController::class, 'store'])->name('customer.pemesanan.store');
     Route::get('/pesanan', [CustomerTiketController::class, 'pesananSaya'])->name('customer.pesanan');
     Route::post('/pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
+    Route::post('/pemesanan/cancel', [PembayaranController::class, 'cancel'])->name('pemesanan.cancel');
 });
 
 require __DIR__.'/auth.php';
