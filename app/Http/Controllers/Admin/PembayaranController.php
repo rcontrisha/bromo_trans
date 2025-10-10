@@ -14,14 +14,57 @@ use Illuminate\Support\Facades\Log;
 
 class PembayaranController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pembayarans = Pembayaran::with(['pemesanan.customer', 'pemesanan.tiket.mobil'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Pembayaran::with(['pemesanan.customer', 'pemesanan.tiket.mobil'])
+            ->orderBy('created_at', 'desc');
+
+        // 🗓️ Filter tanggal manual
+        if ($request->filled('from') && $request->filled('to')) {
+            $query->whereBetween('created_at', [
+                $request->from . ' 00:00:00',
+                $request->to . ' 23:59:59',
+            ]);
+        }
+
+        // ⚡ Filter cepat
+        if ($request->quick === 'today') {
+            $query->whereDate('created_at', now());
+        } elseif ($request->quick === 'week') {
+            $query->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+        } elseif ($request->quick === 'month') {
+            $query->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year);
+        }
+
+        // 💳 Filter metode pembayaran
+        if ($request->filled('metode')) {
+            $query->where('metode_pembayaran', $request->metode);
+        }
+
+        // 💳 Filter metode pembayaran
+        if ($request->filled('metode')) {
+            $query->where('metode_pembayaran', $request->metode);
+        }
+
+        // 🧾 Filter status pembayaran
+        if ($request->filled('status')) {
+            $query->whereHas('pemesanan', function ($q) use ($request) {
+                $q->where('status_pemesanan', $request->status);
+            });
+        }
+
+        $pembayarans = $query->get();
 
         return Inertia::render('Admin/Pembayaran', [
             'pembayarans' => $pembayarans,
+            'filters' => [
+                'from' => $request->from,
+                'to' => $request->to,
+                'metode' => $request->metode,
+                'status' => $request->status, // ✅ tambahin ini
+                'quick' => $request->quick,
+            ],
         ]);
     }
 
